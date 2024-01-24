@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import random
 
 class CA_grid:
 
@@ -11,4 +12,41 @@ class CA_grid:
         self.grid = None
 
     def make_grid(self):
-        return
+        self.grid = np.zeros((self.height, self.width), dtype=np.int32)
+
+        water_molecule_1 = 0
+        while(water_molecule_1 < 948):
+            cell1_height = random.randint(0, 24)
+            width = random.randint(0, 54)
+            if self.grid[cell1_height, width] == 1:
+                continue
+            else:
+                self.grid[cell1_height, width] = 1
+                water_molecule_1 += 1
+
+        lipid_molecule = 0
+        while(lipid_molecule < 190):
+            membrane_height = random.randint(25, 29)
+            width = random.randint(0, 54)
+            if self.grid[membrane_height, width] == 4:
+                continue
+            else:
+                self.grid[membrane_height, width] = 4   
+                lipid_molecule += 1
+
+        water_molecule_2 = 0
+        while(water_molecule_2 < 948):
+            cell2_height = random.randint(30, 54)
+            width = random.randint(0, 54)
+            if self.grid[cell2_height, width] == 2:
+                continue
+            else:
+                self.grid[cell2_height, width] = 2  
+                water_molecule_2 += 1
+
+        return self.grid
+    
+ca_grid = CA_grid()
+see_grid = ca_grid.make_grid()
+plt.imshow(see_grid)
+plt.show()
