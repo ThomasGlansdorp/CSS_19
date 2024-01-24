@@ -11,7 +11,7 @@ class CA_grid:
 
         self.grid = None
 
-    def make_grid(self):
+    def make_grid_membrane(self):
         self.grid = np.zeros((self.height, self.width), dtype=np.int32)
 
         water_molecule_1 = 0
@@ -43,6 +43,31 @@ class CA_grid:
             else:
                 self.grid[cell2_height, width] = 2  
                 water_molecule_2 += 1
+            
+        return self.grid
+    
+    def make_grid(self):
+        self.grid = np.zeros((self.height, self.width), dtype=np.int32)
+
+        water_molecule = 0
+        while(water_molecule < round(self.width * self.height * 0.69)):  
+            height = random.randint(0, 54)
+            width = random.randint(0, 54)
+            if self.grid[height, width] == 1:
+                continue
+            else:
+                self.grid[height, width] = 1
+                water_molecule += 1
+
+        solute_molecule = 0
+        while(solute_molecule < 100):  #add variable that can be altered for the amount of solute molecules
+            height = random.randint(0, 54)
+            width = random.randint(0, 54)
+            if self.grid[height, width] == 2 or self.grid[height, width] == 0:
+                continue
+            else:
+                self.grid[height, width] = 2
+                solute_molecule += 1
 
         return self.grid
     
