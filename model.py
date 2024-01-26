@@ -4,10 +4,11 @@ import random
 
 class CA_grid:
 
-    def __init__(self, height=55, membrane_height=5, width=55) -> None:
+    def __init__(self, solute_amount=100, height=55, membrane_height=5, width=55) -> None:
         self.height = height
         self.membrane_height = membrane_height
         self.width = width
+        self.solute_amount = solute_amount
 
         self.grid = None
 
@@ -60,7 +61,7 @@ class CA_grid:
                 water_molecule += 1
 
         solute_molecule = 0
-        while(solute_molecule < 100):  #add variable that can be altered for the amount of solute molecules
+        while(solute_molecule < self.solute_amount):  #add variable that can be altered for the amount of solute molecules
             height = random.randint(0, 54)
             width = random.randint(0, 54)
             if self.grid[height, width] == 2 or self.grid[height, width] == 0:
@@ -80,7 +81,7 @@ class CA_rules:
         self.grid = ca_grid.make_grid()
 
         self.pbw = 0.25
-        self.pbwl = 0.9
+        self.pbwl = 0.45
         self.pbl = 0.1
 
         self.height = ca_grid.height
@@ -203,7 +204,7 @@ class CA_rules:
         return p
 
     def generate_simulation(self):
-        for i in range(1, 10000):
+        for i in range(1, 5000):
             self.grid = self.step()
             print(f'This is iteration {i} of the simulation')
         
