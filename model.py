@@ -79,9 +79,9 @@ class CA_rules:
     def __init__(self, ca_grid: CA_grid) -> None:
         self.grid = ca_grid.make_grid()
 
-        self.pbw = 0.375
+        self.pbw = 0.25
         self.pbwl = 0.9
-        self.pbl = 0.375
+        self.pbl = 0.1
 
         self.height = ca_grid.height
         self.width = ca_grid.width
@@ -127,6 +127,7 @@ class CA_rules:
 
     def get_neighbourings(self, height, width):
         neighbours = [] # keeps track of neighbours of center cell, in order of center, above, under, left, right
+        # neighbours = [(h, w, v), (h, w, v), etc]
 
         neighbours.append((height, width, self.grid[height, width]))
         neighbours.append((((height - 1) % self.height), width, self.grid[((height - 1) % self.height), width]))
