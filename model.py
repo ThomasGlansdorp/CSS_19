@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import random
+from analysis import count_unbound_water
 
 class CA_grid:
 
@@ -87,8 +88,8 @@ class CA_grid:
                 self.grid[height, width] = 1
                 water_molecule += 1
 
-        plt.imshow(self.grid)
-        plt.show()
+        #plt.imshow(self.grid)
+        #plt.show()
 
         return self.grid
 
@@ -226,12 +227,12 @@ class CA_rules_only_water:
                     continue
                 #print('hoi')
 
-                move_probability = self.move_probability(neighbours)
+                moving_probability = self.move_probability(neighbours)
                 #print(move_probability)
 
                 rand = random.random() 
                 #print(rand)
-                if rand > move_probability: # if it does not break free of cluster continue to next step in for loop
+                if rand > moving_probability: # if it does not break free of cluster continue to next step in for loop
                     continue
                 
                 #print('cell moves')
@@ -287,17 +288,31 @@ class CA_rules_only_water:
         return p
     
     def generate_simulation(self):
-        for i in range(1, 10000):
+        for i in range(1, 1000):
             self.grid = self.step()
             print(f'This is iteration {i} of the simulation')
         
         return self.grid
     
 
-see_grid = CA_rules_only_water(CA_grid()).generate_simulation()
-plt.imshow(see_grid)
-plt.show()
+# see_grid = CA_rules_only_water(CA_grid()).generate_simulation()
+# plt.imshow(see_grid)
+# plt.show()
 
 # see_grid = CA_rules(CA_grid()).generate_simulation()
 # plt.imshow(see_grid)
 # plt.show()
+
+# unbound_water_count = []    
+
+# for pbw in np.arange(0, 1, 0.1):
+#     final_grid = CA_rules_only_water(CA_grid(), pbw).generate_simulation()
+#     total_height = 55
+#     total_width = 55
+#     print(pbw)
+
+#     unbound_water = count_unbound_water(final_grid, total_height, total_width)
+
+#     unbound_water_count.append(unbound_water)
+
+# print(unbound_water_count)
