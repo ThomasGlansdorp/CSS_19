@@ -215,7 +215,11 @@ class CA_rules:
         # Check if the current cell is not a solvent molecule
         if self.grid[height, width] != 2:
             return False
-        
+
+        # Check if the current cell has been visited before
+        visited = {}  
+        visited[height, width] = True
+
         # Visit all neighbours (up, down, left, right) and check if they are unbound
         for depth_height, depth_width in [(-1, 0), (1, 0), (0, -1), (0,1)]:
             height_neighbor = height + depth_height
@@ -225,11 +229,10 @@ class CA_rules:
                 width_neighbor < 0 or width_neighbor >= self.width
                 or self.grid[height_neighbor, width_neighbor] == 2
             ):
-                return False # If the neighbouring cell is out of bounds or a solvent molecule
+                return False  # If the neighbouring cell is out of bounds or a solvent molecule
             
         # True if all neighbouring cell are not solvent molecules
         return True 
-        
             
     def count_unbound_solutes(self):
         free_solvent_count = 0
@@ -249,7 +252,7 @@ class CA_rules:
     
     def generate_simulation(self, pbw=0.25):
         self.pbw = pbw
-        for i in range(1, 5000):
+        for i in range(1, 2000):
             self.grid = self.step()
             # print(f'This is iteration {i} of the simulation')
         
@@ -257,7 +260,7 @@ class CA_rules:
         return self.grid, free_solvent_count
 
 pbw_rate = np.arange(0.0, 1.25, 0.25)
-num_runs = 10 # Run it mulitple times to account for stochasticity
+num_runs = 2 # Run it mulitple times to account for stochasticity
 results_total_amount = {} # Store the results for each pbw rate in a dictionary
 
 for pbw in pbw_rate:
