@@ -204,10 +204,10 @@ class CA_rules:
     
 class CA_rules_only_water:
 
-    def __init__(self, ca_grid: CA_grid) -> None:
+    def __init__(self, ca_grid: CA_grid, pbw) -> None:
         self.grid = ca_grid.make_grid_water()
 
-        self.pbw = 0.25
+        self.pbw = pbw
 
         self.height = ca_grid.height
         self.width = ca_grid.width
@@ -226,7 +226,7 @@ class CA_rules_only_water:
                     continue
                 #print('hoi')
 
-                move_probability = self.move_probability(height, width, neighbours)
+                move_probability = self.move_probability(neighbours)
                 #print(move_probability)
 
                 rand = random.random() 
@@ -262,7 +262,7 @@ class CA_rules_only_water:
 
         return neighbours
     
-    def move_probability(self, height, width, neighbours):
+    def move_probability(self, neighbours):
         pbw_counter = 0
         open_cell_counter = 0
 
@@ -271,12 +271,12 @@ class CA_rules_only_water:
                 open_cell_counter += 1
             else:
                 pbw_counter += 1
-
+        
         move_probability = self.calculate_probability(pbw_counter, open_cell_counter)
         
         return move_probability
 
-    def calculate_probability(self, pbl_counter, pbwl_counter, pbw_counter, open_cell_counter):
+    def calculate_probability(self, pbw_counter, open_cell_counter):
         pbw = 1
 
         if pbw_counter != 0:
@@ -294,7 +294,7 @@ class CA_rules_only_water:
         return self.grid
     
 
-see_grid = CA_rules(CA_grid()).generate_simulation()
+see_grid = CA_rules_only_water(CA_grid()).generate_simulation()
 plt.imshow(see_grid)
 plt.show()
 
