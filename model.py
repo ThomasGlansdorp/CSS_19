@@ -101,7 +101,7 @@ class CA_rules:
         self.grid = ca_grid.make_grid()
 
         self.pbw = 0.25
-        self.pbwl = 0.45
+        self.pbwl = 0.90
         self.pbl = 0.1
 
         self.height = ca_grid.height
@@ -204,43 +204,6 @@ class CA_rules:
 
         return self.grid
     
-    def calculate_attributes(self):
-        unbound_count = 0
-        bond_count = {1: 0, 2: 0, 3: 0, 4: 0}
-        total_bonds = 0
-
-        for height in range(self.height):
-            for width in range(self.width):
-                cell_value = self.grid[height, width]
-                if cell_value not in (1, 2): 
-                    continue
-        
-                neighbours = self.get_neighbourings(height, width)[1:]  # Exclude the cell itself
-                # Count bound and unbound molecules
-                bound_neighbours = sum(neighbour[2] == cell_value for neighbour in neighbours)
-                if bound_neighbours == 0:
-                    unbound_count += 1
-                else:
-                    bond_count[bound_neighbours] += 1
-                
-                # For water, calculate the average number of hydrogen bonds
-                if cell_value == 1:  # Water
-                    total_bonds += bound_neighbours
-
-        # Calculate the fractions
-        total_molecules = np.sum(self.grid == 1) + np.sum(self.grid == 2)
-        f_o = unbound_count / total_molecules if total_molecules else 0
-        f_1 = bond_count[1] / total_molecules if total_molecules else 0
-        f_2 = bond_count[2] / total_molecules if total_molecules else 0
-        f_3 = bond_count[3] / total_molecules if total_molecules else 0
-        f_4 = bond_count[4] / total_molecules if total_molecules else 0
-        
-
-        # Calculate average hydrogen bonds for water
-        water_count = np.sum(self.grid == 1)
-        n_HB = total_bonds / water_count if water_count else 0
-
-        return f_o, f_1, f_2, f_3, f_4, n_HB
     
 class CA_rules_only_water:
 
@@ -334,44 +297,7 @@ class CA_rules_only_water:
         return self.grid
     
 
-# see_grid = CA_rules(CA_grid()).generate_simulation()
-# plt.imshow(see_grid)
-# plt.show()
-# ca_grid = CA_grid
-# ca_rules = CA_rules(CA_grid)
-# ca_rules.generate_simulation()
-
-# see_grid = CA_rules(CA_grid()).generate_simulation()
-# plt.imshow(see_grid)
-# plt.show()
     
-solute_concentrations = [50, 100, 150, 200, 250, 300]
-results = []
-
-for solute_amount in solute_concentrations:
-    print(f"Running simulation with {solute_amount} solute molecules.")
-    ca_grid = CA_grid(solute_amount=solute_amount)
-    ca_rules = CA_rules(ca_grid)
-    ca_rules.generate_simulation()
-    attributes = ca_rules.calculate_attributes()
-
-    results.append({
-        'solute concentration': solute_amount, 
-        'f_0': attributes[0],
-        'f_1': attributes[1],
-        'f_2': attributes[2],
-        'f_3': attributes[3],
-        'f_4': attributes[4],
-        'n_HB': attributes[0]
-    })
-
-    df = pd.DataFrame(results)
-    print(df)
-
-
-    # plt.imshow(final_grid)
-    # plt.title(f"Solute concentration: {solute_amount}")
-    # plt.show()
 
 
 
