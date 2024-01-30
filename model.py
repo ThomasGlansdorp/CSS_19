@@ -78,25 +78,6 @@ class CA_grid:
 
         return self.grid
     
-    def make_grid_water(self):
-        self.grid = np.zeros((self.height, self.width), dtype=np.int32)
-
-        water_molecule = 0
-        while(water_molecule < round(self.width * self.height * 0.69)):  
-            height = random.randint(0, 54)
-            width = random.randint(0, 54)
-            if self.grid[height, width] == 1:
-                continue
-            else:
-                self.grid[height, width] = 1
-                water_molecule += 1
-
-        #plt.imshow(self.grid)
-        #plt.show()
-
-        return self.grid
-
-    
 class CA_rules:
 
     def __init__(self, ca_grid: CA_grid, pbw=0.25, pbwl= 0.45, pbl=0.1) -> None:
@@ -243,9 +224,8 @@ class CA_rules:
 
         return free_solvent_count
     
-    def generate_simulation(self, pbw=0.25):
-        self.pbw = pbw
-        for i in range(1, 2000):
+    def generate_simulation(self):
+        for i in range(1, 5000):
             self.grid = self.step()
             # print(f'This is iteration {i} of the simulation')
         
@@ -254,7 +234,7 @@ class CA_rules:
 class CA_rules_only_water:
 
     def __init__(self, ca_grid: CA_grid, pbw) -> None:
-        self.grid = ca_grid.make_grid_water()
+        self.grid = ca_grid.make_grid()
 
         self.pbw = pbw
 
