@@ -1,10 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import random
+import statistics
 from matplotlib import animation, rc
 from IPython.display import HTML
-#rc('animation', html='html5')
-import statistics
 import math
 
 class CA_grid:
