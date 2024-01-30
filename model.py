@@ -53,8 +53,7 @@ class CA_grid:
         self.grid = np.zeros((self.height, self.width), dtype=np.int32)
 
         water_molecule = 0
-        # while(water_molecule < round(self.width * self.height * 0.69)): 
-        while(water_molecule < round(2000)):  
+        while(water_molecule < round(self.width * self.height * 0.69)):  
             height = random.randint(0, 54)
             width = random.randint(0, 54)
             if self.grid[height, width] == 1:
