@@ -73,8 +73,8 @@ class CA_grid:
                 self.grid[height, width] = 2
                 solute_molecule += 1
 
-        plt.imshow(self.grid)
-        plt.show()
+        # plt.imshow(self.grid)
+        # plt.show()
 
         return self.grid
     
@@ -336,13 +336,13 @@ class CA_rules_only_water:
         return p
     
     def generate_simulation(self):
-        for i in range(1, 10000):
+        for i in range(1, 100):
             self.grid = self.step()
             print(f'This is iteration {i} of the simulation')
         
         return self.grid
     
 
-see_grid = CA_rules(CA_grid()).generate_simulation()
-plt.imshow(see_grid)
-plt.show()
+# see_grid = CA_rules(CA_grid()).generate_simulation()
+# plt.imshow(see_grid)
+# plt.show()
