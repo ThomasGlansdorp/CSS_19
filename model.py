@@ -1,15 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import random
-from analysis import count_unbound_water
+import statistics
+import math
 
 class CA_grid:
 
-    def __init__(self, height=55, membrane_height=5, width=55) -> None:
+    def __init__(self, solute_amount=100, height=55, membrane_height=5, width=55) -> None:
         self.height = height
         self.membrane_height = membrane_height
         self.width = width
 
+        self.solute_amount = solute_amount
         self.grid = None
 
     def make_grid_membrane(self):
@@ -51,7 +53,8 @@ class CA_grid:
         self.grid = np.zeros((self.height, self.width), dtype=np.int32)
 
         water_molecule = 0
-        while(water_molecule < round(self.width * self.height * 0.69)):  
+        # while(water_molecule < round(self.width * self.height * 0.69)): 
+        while(water_molecule < round(2000)):  
             height = random.randint(0, 54)
             width = random.randint(0, 54)
             if self.grid[height, width] == 1:
@@ -61,7 +64,7 @@ class CA_grid:
                 water_molecule += 1
 
         solute_molecule = 0
-        while(solute_molecule < 100):  #add variable that can be altered for the amount of solute molecules
+        while(solute_molecule < self.solute_amount):  #add variable that can be altered for the amount of solute molecules
             height = random.randint(0, 54)
             width = random.randint(0, 54)
             if self.grid[height, width] == 2 or self.grid[height, width] == 0:
@@ -70,8 +73,8 @@ class CA_grid:
                 self.grid[height, width] = 2
                 solute_molecule += 1
 
-        plt.imshow(self.grid)
-        plt.show()
+        # plt.imshow(self.grid)
+        # plt.show()
 
         return self.grid
     
@@ -96,12 +99,12 @@ class CA_grid:
     
 class CA_rules:
 
-    def __init__(self, ca_grid: CA_grid) -> None:
+    def __init__(self, ca_grid: CA_grid, pbw=0.25, pbwl= 0.45, pbl=0.1) -> None:
         self.grid = ca_grid.make_grid()
 
-        self.pbw = 0.25
-        self.pbwl = 0.9
-        self.pbl = 0.1
+        self.pbw = pbw
+        self.pbwl = pbwl
+        self.pbl = pbl
 
         self.height = ca_grid.height
         self.width = ca_grid.width
@@ -140,8 +143,9 @@ class CA_rules:
                 move_to = neighbours[index]
 
                 self.grid[move_to[0], move_to[1]] = neighbours[0][2]
-                self.grid[height, width] = 0                                
-                                            
+                self.grid[height, width] = 0         
+                  
+                                        
         return self.grid
 
 
@@ -196,10 +200,54 @@ class CA_rules:
 
         return p
 
-    def generate_simulation(self):
-        for i in range(1, 10000):
+    def search_method(self, height, width):
+        # Check if the cell is out of bounds
+        if height < 0 or height >= self.height or width < 0 or width >= self.width:
+            return False
+        
+        # Check if the current cell is not a solvent molecule
+        if self.grid[height, width] != 2:
+            return False
+
+        # Check if the current cell has been visited before
+        visited = {}  
+        visited[height, width] = True
+
+        # Visit all neighbours (up, down, left, right) and check if they are unbound
+        for depth_height, depth_width in [(-1, 0), (1, 0), (0, -1), (0,1)]:
+            height_neighbor = height + depth_height
+            width_neighbor = width + depth_width
+            if (
+                height_neighbor < 0 or height_neighbor >= self.height or
+                width_neighbor < 0 or width_neighbor >= self.width
+                or self.grid[height_neighbor, width_neighbor] == 2
+            ):
+                return False  # If the neighbouring cell is out of bounds or a solvent molecule
+            
+        # True if all neighbouring cell are not solvent molecules
+        return True 
+            
+    def count_unbound_solutes(self):
+        free_solvent_count = 0
+
+        # Iterate over the grid 
+        for height in range(self.height):
+            for width in range(self.width):
+
+                # Check if the cell is solvent molecule
+                if self.grid[height, width] == 2:
+
+                    # Check if the solvent molecule is unbound
+                    if self.search_method(height, width):
+                        free_solvent_count += 1
+
+        return free_solvent_count
+    
+    def generate_simulation(self, pbw=0.25):
+        self.pbw = pbw
+        for i in range(1, 2000):
             self.grid = self.step()
-            print(f'This is iteration {i} of the simulation')
+            # print(f'This is iteration {i} of the simulation')
         
         return self.grid
     
@@ -288,31 +336,13 @@ class CA_rules_only_water:
         return p
     
     def generate_simulation(self):
-        for i in range(1, 1000):
+        for i in range(1, 100):
             self.grid = self.step()
             print(f'This is iteration {i} of the simulation')
         
         return self.grid
     
 
-# see_grid = CA_rules_only_water(CA_grid()).generate_simulation()
-# plt.imshow(see_grid)
-# plt.show()
-
 # see_grid = CA_rules(CA_grid()).generate_simulation()
 # plt.imshow(see_grid)
 # plt.show()
-
-# unbound_water_count = []    
-
-# for pbw in np.arange(0, 1, 0.1):
-#     final_grid = CA_rules_only_water(CA_grid(), pbw).generate_simulation()
-#     total_height = 55
-#     total_width = 55
-#     print(pbw)
-
-#     unbound_water = count_unbound_water(final_grid, total_height, total_width)
-
-#     unbound_water_count.append(unbound_water)
-
-# print(unbound_water_count)
