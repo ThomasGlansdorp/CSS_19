@@ -1,6 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import random
+from matplotlib import animation, rc
+from IPython.display import HTML
+#rc('animation', html='html5')
 
 class CA_grid:
 
@@ -302,3 +305,29 @@ plt.show()
 # see_grid = CA_rules(CA_grid()).generate_simulation()
 # plt.imshow(see_grid)
 # plt.show()
+
+# Define the CA_grid and CA_rules instances
+ca_grid = CA_grid()
+ca_rules = CA_rules(ca_grid)
+
+# Create a figure and axis
+fig, ax = plt.subplots()
+
+# Function to initialize the plot
+def init():
+    ax.imshow(ca_grid.grid)
+    return [ax]
+
+# Function to update the plot for each animation frame
+def update(frame):
+    ca_rules.step()
+    ax.clear()  # Clear the previous plot
+    ax.imshow(ca_grid.grid)
+    return [ax]
+
+# Create the animation
+anim = animation.FuncAnimation(fig, update, frames=200, init_func=init, blit=True)
+plt.show()
+
+# Save the animation as an mp4. Need ffmpeg, follow https://www.wikihow.com/Install-FFmpeg-on-Windows for Windows
+HTML(anim.to_html5_video())
