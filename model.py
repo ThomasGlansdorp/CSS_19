@@ -244,9 +244,9 @@ class CA_rules:
     
     def generate_simulation(self, pbw=0.25):
         self.pbw = pbw
-        for i in range(1, 2000):
+        for i in range(1, 5000):
             self.grid = self.step()
-            # print(f'This is iteration {i} of the simulation')
+            print(f'This is iteration {i} of the simulation')
         
         return self.grid
     
@@ -320,7 +320,7 @@ class CA_rules_only_water:
             else:
                 pbw_counter += 1
 
-        move_probability = self.calculate_probability(pbw_counter, open_cell_counter)
+        move_probability = self.calculate_probability(pbw_counter=pbw_counter, open_cell_counter=open_cell_counter)
         
         return move_probability
 
@@ -335,7 +335,7 @@ class CA_rules_only_water:
         return p
     
     def generate_simulation(self):
-        for i in range(1, 100):
+        for i in range(1, 5000):
             self.grid = self.step()
             print(f'This is iteration {i} of the simulation')
         
