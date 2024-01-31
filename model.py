@@ -81,7 +81,7 @@ class CA_grid:
     
 class CA_rules:
 
-    def __init__(self, ca_grid: CA_grid, pbw=0.25, pbwl= 0.45, pbl=0.1, pbw_parameter=True, pbl_parameter=True, pbwl_parameter=True) -> None:
+    def __init__(self, ca_grid: CA_grid, pbw, pbwl= 0.45, pbl=0.1, pbw_parameter=True, pbl_parameter=True, pbwl_parameter=True) -> None:
         self.grid = ca_grid.make_grid()
 
         self.pbw = pbw
@@ -232,7 +232,7 @@ class CA_rules:
 
         return free_solvent_count
     
-    def generate_simulation(self, pbw=0.25):
+    def generate_simulation(self, pbw):
         self.pbw = pbw
         for i in range(1, 5000):
             self.grid = self.step()
