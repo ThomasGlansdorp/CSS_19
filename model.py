@@ -74,8 +74,8 @@ class CA_grid:
                 self.grid[height, width] = 2
                 solute_molecule += 1
 
-        # plt.imshow(self.grid)
-        # plt.show()
+        plt.imshow(self.grid)
+        plt.show()
 
         return self.grid
     
@@ -98,7 +98,7 @@ class CA_rules:
         
         for height in range(self.height):
             for width in range(self.width):
-                if self.grid[height, width] == 0:
+                if self.grid[height, width] == 0 or self.grid[height, width] == 2:
                     continue
 
                 neighbours = self.get_neighbourings(height, width)
@@ -108,7 +108,7 @@ class CA_rules:
                     continue
                 #print('hoi')
 
-                move_probability = self.move_probability(height, width, neighbours)
+                move_probability = self.move_probability(neighbours)
                 #print(move_probability)
 
                 rand = random.random() 
@@ -234,9 +234,12 @@ class CA_rules:
     
     def generate_simulation(self, pbw=0.25):
         self.pbw = pbw
-        for i in range(1, 2000):
+        for i in range(1, 5000):
             self.grid = self.step()
-            # print(f'This is iteration {i} of the simulation')
+            print(f'This is iteration {i} of the simulation')
+
+        plt.imshow(self.grid)
+        plt.show()
         
         return self.grid
     
