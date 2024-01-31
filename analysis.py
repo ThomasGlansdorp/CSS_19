@@ -36,8 +36,8 @@ if __name__ == '__main__':
 def count_neighbours(grid, total_height, total_width, cell_type=0):
     count = 0
 
-    for height in total_height:
-        for width in total_width:
+    for height in range(total_height):
+        for width in range(total_width):
             neighbours = get_neighbours(height, width, grid, total_height, total_width)
 
             center = neighbours[1]
