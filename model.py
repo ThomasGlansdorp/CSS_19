@@ -244,7 +244,7 @@ class CA_rules:
     
     def generate_simulation(self, pbw=0.25):
         self.pbw = pbw
-        for i in range(1, 5000):
+        for i in range(1, 100):
             self.grid = self.step()
             print(f'This is iteration {i} of the simulation')
         
