@@ -81,7 +81,7 @@ class CA_grid:
     
 class CA_rules:
 
-    def __init__(self, ca_grid: CA_grid, pbw=0.25, pbwl= 0.45, pbl=0.1, pbw_parameter=True, pbl_parameter=False, pbwl_parameter=False) -> None:
+    def __init__(self, ca_grid: CA_grid, pbw=0.4, pbwl= 0.45, pbl=0.1, pbw_parameter=True, pbl_parameter=False, pbwl_parameter=False) -> None:
         self.grid = ca_grid.make_grid()
 
         self.pbw = pbw
@@ -108,7 +108,7 @@ class CA_rules:
                     continue
                 #print('hoi')
 
-                move_probability = self.move_probability(neighbours)
+                move_probability = self.move_probability(neighbours, pbw_parameter=True, pbl_parameter=False, pbwl_parameter=False)
                 #print(move_probability)
 
                 rand = random.random() 
@@ -146,7 +146,7 @@ class CA_rules:
 
         return neighbours
         
-    def move_probability(self, neighbours):
+    def move_probability(self, neighbours, pbw_parameter=True, pbl_parameter=False, pbwl_parameter=False):
         pbw_counter = 0
         pbwl_counter = 0
         pbl_counter = 0
@@ -232,9 +232,10 @@ class CA_rules:
 
         return free_solvent_count
     
-    def generate_simulation(self, pbw=0.25):
+    def generate_simulation(self, pbwl, pbw=0.4):
         self.pbw = pbw
-        for i in range(1, 2000):
+        self.pbwl = pbwl
+        for i in range(1, 5000):
             self.grid = self.step()
             # print(f'This is iteration {i} of the simulation')
         
