@@ -108,7 +108,7 @@ class CA_rules:
                     continue
                 #print('hoi')
 
-                move_probability = self.move_probability(height, width, neighbours)
+                move_probability = self.move_probability(neighbours)
                 #print(move_probability)
 
                 rand = random.random() 
