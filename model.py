@@ -101,7 +101,7 @@ class CA_grid:
     
 class CA_rules:
 
-    def __init__(self, ca_grid: CA_grid, pbw=0.25, pbwl= 0.45, pbl=0.1) -> None:
+    def __init__(self, ca_grid: CA_grid, pbw=0.25, pbwl=0.4, pbl=0.1) -> None:
         self.grid = ca_grid.make_grid()
 
         self.pbw = pbw
@@ -247,9 +247,9 @@ class CA_rules:
     
     def generate_simulation(self, pbw=0.25):
         self.pbw = pbw
-        for i in range(1, 2000):
+        for i in range(1, 5000):
             self.grid = self.step()
-            # print(f'This is iteration {i} of the simulation')
+            #print(f'This is iteration {i} of the simulation')
         
         return self.grid
     
@@ -340,15 +340,35 @@ class CA_rules_only_water:
     def generate_simulation(self):
         for i in range(1, 100):
             self.grid = self.step()
-            print(f'This is iteration {i} of the simulation')
+            #print(f'This is iteration {i} of the simulation')
         
         return self.grid
+
+ca_grid = CA_grid()
+ca_rules = CA_rules(ca_grid, pbwl=2)
+simulation_result = ca_rules.generate_simulation()
+
+# Create a plot for the simulation result
+plt.imshow(simulation_result, cmap='viridis')
+plt.title(f'Simulation Result for pbwl={0.95}')
+plt.show()
+
+###
+pbwl_vals = [0.1, 0.25, 0.4, 0.80]
+    
+for pbwl in pbwl_vals:
+    ca_grid = CA_grid()
+    ca_rules = CA_rules(ca_grid, pbwl)
+    simulation_result = ca_rules.generate_simulation()
+
+    # Create a plot for the simulation result
+    plt.imshow(simulation_result, cmap='viridis')
+    plt.title(f'Simulation Result for pbwl={pbwl}')
+    plt.show()
     
 
-# see_grid = CA_rules(CA_grid()).generate_simulation()
-# plt.imshow(see_grid)
-# plt.show()
 
+##################### Animation #####################
 # Define the CA_grid and CA_rules instances
 ca_grid = CA_grid()
 ca_rules = CA_rules(ca_grid)
@@ -363,7 +383,7 @@ def init():
 
 # Function to update the plot for each animation frame
 def update(frame):
-    ca_rules.step()
+    ca_rules.generate_simulation()
     ax.clear()  # Clear the previous plot
     ax.imshow(ca_grid.grid)
     return [ax]
@@ -373,4 +393,71 @@ anim = animation.FuncAnimation(fig, update, frames=200, init_func=init, blit=Tru
 plt.show()
 
 # Save the animation as an mp4. Need ffmpeg, follow https://www.wikihow.com/Install-FFmpeg-on-Windows for Windows
-HTML(anim.to_html5_video())
+#HTML(anim.to_html5_video())
+
+################################################################
+################################################################
+'Varying breaking probability Water-Solute (PbWL)'
+from analysis import calculate_attributes
+
+pbwl_vals = [0.10, 0.25, 0.40, 0.80] 
+results = []
+
+runs = 5
+
+all_results = {pbwl: [] for pbwl in pbwl_vals}
+total_molecules = 2087 # 55x55x0.69
+
+for pbwl_value in pbwl_vals:
+    
+    pbwl_results = []
+
+    for run in range(runs):
+        print(f"Running simulation with {pbwl_value} pbwl value.")
+        ca_grid = CA_grid(solute_amount=100)
+        ca_rules = CA_rules(ca_grid, pbwl=pbwl_value)
+
+        final_grid = ca_rules.generate_simulation()
+
+        f_o, f_1, f_2, f_3, f_4 = calculate_attributes(grid=ca_grid, rules=ca_rules, cell_type=2)
+        pbwl_results.append(np.array([f_o, f_1, f_2, f_3, f_4]))
+
+    pbwl_results = np.array(pbwl_results)
+
+    average_results = np.mean(pbwl_results, axis=0)
+    std_dev_results = np.std(pbwl_results, axis=0)
+
+    all_results[pbwl_value] = {
+        'average': average_results,
+        'std_dev': std_dev_results
+    }
+
+for pbwl_value, data in all_results.items():
+    print(f"Pbwl value: {pbwl_value}")
+    print(f"Average: {data['average']}")
+    print(f"Standard Deviation: {data['std_dev']}")
+    print()
+
+for i, attribute in enumerate(['$f_0$', '$f_1$', '$f_2$', '$f_3$', '$f_4$']):
+    averages = [all_results[pbwl]['average'][i] for pbwl in pbwl_vals]
+    std_devs = [all_results[pbwl]['std_dev'][i] for pbwl in pbwl_vals]
+    
+    num_runs = 5
+    confidence_interval = 1.96 * np.array(std_devs) / np.sqrt(num_runs)
+    
+    lower_bound = np.array(averages) - confidence_interval
+    upper_bound = np.array(averages) + confidence_interval
+
+    plt.plot(np.array(pbwl_vals), averages, label=attribute)
+    plt.fill_between(np.array(pbwl_vals), lower_bound, upper_bound, alpha=0.2)
+
+    
+plt.xlabel('Pbwl value', fontsize=14, fontweight='bold')
+plt.ylabel('Attribute Value', fontsize=14, fontweight='bold')
+plt.ylim(0, 1)  
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.title('Effect of Pbwl values on Water Structure', fontsize=16, fontweight='bold')
+plt.legend(fontsize=10)
+plt.grid(True, which='both', linestyle='--', linewidth=0.5)
+plt.tight_layout()  
