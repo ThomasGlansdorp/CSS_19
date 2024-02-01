@@ -81,15 +81,18 @@ class CA_grid:
     
 class CA_rules:
 
-    def __init__(self, ca_grid: CA_grid, pbw=0.25, pbwl= 0.45, pbl=0.1, pbw_parameter=True, pbl_parameter=True, pbwl_parameter=True) -> None:
+    def __init__(self, ca_grid: CA_grid, pbw=0.25, pbwl= 0.45, pbl=0.1, pbw_parameter=True, pbl_parameter=True, pbwl_parameter=True, overlook_cell=0) -> None:
         self.grid = ca_grid.make_grid()
 
         self.pbw = pbw
         self.pbwl = pbwl
         self.pbl = pbl
+
         self.pbw_parameter = pbw_parameter
         self.pbl_parameter = pbl_parameter
         self.pbwl_parameter = pbwl_parameter
+
+        self.overlook_cell = overlook_cell
 
         self.height = ca_grid.height
         self.width = ca_grid.width
@@ -98,7 +101,7 @@ class CA_rules:
         
         for height in range(self.height):
             for width in range(self.width):
-                if self.grid[height, width] == 0:
+                if self.grid[height, width] == 0 or self.grid[height, width] == self.overlook_cell:
                     continue
 
                 neighbours = self.get_neighbourings(height, width)
@@ -232,8 +235,11 @@ class CA_rules:
 
         return free_solvent_count
     
-    def generate_simulation(self, pbw=0.25):
+    def generate_simulation(self, pbw=0, pbl=0, pbwl=0):
         self.pbw = pbw
+        self.pbl = pbl
+        self.pbwl = pbwl
+
         for i in range(1, 2000):
             self.grid = self.step()
             # print(f'This is iteration {i} of the simulation')
