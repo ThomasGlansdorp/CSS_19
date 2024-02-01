@@ -111,7 +111,7 @@ class CA_rules:
                     continue
                 #print('hoi')
 
-                move_probability = self.move_probability(height, width, neighbours)
+                move_probability = self.move_probability(neighbours)
                 #print(move_probability)
 
                 rand = random.random() 
@@ -240,7 +240,7 @@ class CA_rules:
         self.pbl = pbl
         self.pbwl = pbwl
 
-        for i in range(1, 2000):
+        for i in range(1, 5000):
             self.grid = self.step()
             # print(f'This is iteration {i} of the simulation')
         
