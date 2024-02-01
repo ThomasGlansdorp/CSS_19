@@ -240,7 +240,7 @@ class CA_rules:
         self.pbl = pbl
         self.pbwl = pbwl
 
-        for i in range(1, 100):
+        for i in range(1, 5000):
             self.grid = self.step()
             # print(f'This is iteration {i} of the simulation')
         
