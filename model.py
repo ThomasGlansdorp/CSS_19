@@ -80,12 +80,18 @@ class CA_grid:
     
 class CA_rules:
 
-    def __init__(self, ca_grid: CA_grid, pbw=0.25, pbwl= 0.45, pbl=0.1) -> None:
+    def __init__(self, ca_grid: CA_grid, pbw=0.25, pbwl= 0.45, pbl=0.1, pbw_parameter=True, pbl_parameter=True, pbwl_parameter=True, overlook_cell=0) -> None:
         self.grid = ca_grid.make_grid()
 
         self.pbw = pbw
         self.pbwl = pbwl
         self.pbl = pbl
+
+        self.pbw_parameter = pbw_parameter
+        self.pbl_parameter = pbl_parameter
+        self.pbwl_parameter = pbwl_parameter
+
+        self.overlook_cell = overlook_cell
 
         self.height = ca_grid.height
         self.width = ca_grid.width
@@ -94,9 +100,9 @@ class CA_rules:
         
         for height in range(self.height):
             for width in range(self.width):
-                if self.grid[height, width] == 0:
+                if self.grid[height, width] == 0 or self.grid[height, width] == self.overlook_cell:
                     continue
-
+                
                 neighbours = self.get_neighbourings(height, width)
                 #print(neighbours)
 
@@ -224,104 +230,19 @@ class CA_rules:
 
         return free_solvent_count
     
-    def generate_simulation(self):
+    def generate_simulation(self, pbw=0, pbl=0, pbwl=0):
+        self.pbw = pbw
+        self.pbl = pbl
+        self.pbwl = pbwl
+
         for i in range(1, 5000):
             self.grid = self.step()
             # print(f'This is iteration {i} of the simulation')
         
         return self.grid
     
-class CA_rules_only_water:
-
-    def __init__(self, ca_grid: CA_grid, pbw) -> None:
-        self.grid = ca_grid.make_grid()
-
-        self.pbw = pbw
-
-        self.height = ca_grid.height
-        self.width = ca_grid.width
-
-    def step(self):
-        
-        for height in range(self.height):
-            for width in range(self.width):
-                if self.grid[height, width] == 0:
-                    continue
-
-                neighbours = self.get_neighbourings(height, width)
-                #print(neighbours)
-
-                if not any([i[2] == 0 for i in neighbours]):  # makes new list of boolean expressions if non are true it continues to next step in for loop
-                    continue
-                #print('hoi')
-
-                moving_probability = self.move_probability(neighbours)
-                #print(move_probability)
-
-                rand = random.random() 
-                #print(rand)
-                if rand > moving_probability: # if it does not break free of cluster continue to next step in for loop
-                    continue
-                
-                #print('cell moves')
-                probabilities = [1 if v[2] == 0 else 0 for v in neighbours]
-
-                empty_cells = probabilities.count(1)
-
-                probabilities_normalized = [probability / empty_cells for probability in probabilities]
-
-                index = np.random.choice(len(neighbours), p = probabilities_normalized)
-
-                move_to = neighbours[index]
-
-                self.grid[move_to[0], move_to[1]] = neighbours[0][2]
-                self.grid[height, width] = 0                                
-                                            
-        return self.grid
     
-    def get_neighbourings(self, height, width):
-        neighbours = [] # keeps track of neighbours of center cell, in order of center, above, under, left, right
-        # neighbours = [(h, w, v), (h, w, v), etc]
 
-        neighbours.append((height, width, self.grid[height, width]))
-        neighbours.append((((height - 1) % self.height), width, self.grid[((height - 1) % self.height), width]))
-        neighbours.append((((height + 1) % self.height), width, self.grid[((height + 1) % self.height), width]))
-        neighbours.append((height, ((width - 1) % self.width), self.grid[height, ((width - 1) % self.width)]))
-        neighbours.append((height, ((width + 1) % self.width), self.grid[height, ((width + 1) % self.width)]))
-
-        return neighbours
-    
-    def move_probability(self, neighbours):
-        pbw_counter = 0
-        open_cell_counter = 0
-
-        for neighbour in neighbours:
-            if neighbour[2] == 0:
-                open_cell_counter += 1
-            else:
-                pbw_counter += 1
-        
-        move_probability = self.calculate_probability(pbw_counter, open_cell_counter)
-        
-        return move_probability
-
-    def calculate_probability(self, pbw_counter, open_cell_counter):
-        pbw = 1
-
-        if pbw_counter != 0:
-            pbw = (self.pbw / pbw_counter)
-
-        p = pbw**(4 - open_cell_counter)
-
-        return p
-    
-    def generate_simulation(self):
-        for i in range(1, 100):
-            self.grid = self.step()
-            print(f'This is iteration {i} of the simulation')
-        
-        return self.grid
-    
 
 # see_grid = CA_rules(CA_grid()).generate_simulation()
 # plt.imshow(see_grid)
