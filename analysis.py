@@ -1,6 +1,11 @@
 import numpy as np
 
 def calculate_attributes(grid=None, rules=None, cell_type=1):
+    
+    """
+  This function counts the number of similar molecules surrounding each molecule in the grid. A molecules can be unbound (i.e. not surrounded by any other likewise molecules), or be bound to 1, 2, 3, or 4 other similar molecules.
+    
+    """
 
     unbound_count = 0
     bond_count = {1: 0, 2: 0, 3: 0, 4: 0}
@@ -31,6 +36,10 @@ def calculate_attributes(grid=None, rules=None, cell_type=1):
     return f_o, f_1, f_2, f_3, f_4
 
 def count_neighbours(grid, total_height, total_width, cell_type=0):
+    """
+   This function calculates the total neighbor count for each molecule in the grid. It assigns a +1 if the neighbor is of the same type and -1 if the neighbor is of a different type. The resulting counts can range from +4 (all neighbors are of the same type) to -4 (all neighbors are of a different type).
+    
+    """
     count = 0
 
     for height in range(total_height):
@@ -49,6 +58,10 @@ def count_neighbours(grid, total_height, total_width, cell_type=0):
 
 
 def get_neighbours(height, width, grid, total_height, total_width):
+    """
+    This function extracts the coordinates and values of neighboring cells around a center cell in the grid. The result is a list of tuples, each representing the height, width, and value of a neighboring cell, for example: neighbours = [(h, w, v), (h, w, v), etc]. 
+    
+    """
     neighbours = []
 
     neighbours.append((height, width, grid[height, width]))
