@@ -29,13 +29,21 @@ Robustness of steady state of the system and cluster formation
 References: 
 
 [1] National Human Genome Research Institute, U. S. (2024) National Human Genome Research Institute. United States. [Web Archive] Retrieved from the Library of Congress, https://www.genome.gov/ 
+
 [2] LIPID MAPS: update to databases and tools for the lipidomics community Nucleic Acids Research (2023), Conroy MJ, Andrews RM, Andrews S, Cockayne L, Dennis, EA, Fahy E, Gaud C, Griffiths WJ, Jukes G, Kolchin M, Mendivelso K, Lopez-Clavijo AF, Ready C, Subramaniam S, O'Donnell, VB, DOI: 10.1093/nar/gkad896 , PMID: 37855672
+
 [3] Dingjan, T., & Futerman, A. H. (2021). The fine‐tuning of cell membrane lipid bilayers accentuates their compositional complexity. BioEssays, 43(5), 2100021.
+
 [4]  Kier, L. B., & Cheng, C. K. (1997). Cellular Automata Model of Membrane Permeability. Journal of theoretical biology, 186(1), 75-80 → A cellular Automata Model of Membrane Permeability 
+
 [5] Kier, L. B., & Cheng, C. K. (1994). A Cellular Automata Model of an Aqueous Solution, Journal of Chemical Information and Computer Science.  34, 1334-1337
+
 [6] Kier, L. B., & Cheng, C. K. (1994). A Cellular Automata Model of Water, Journal of Chemical Information and Computer Science.  34, 647-652
+
 [7] Smith, J. D., & Doe, A. B. (2021). Cellular Automata in Membrane Permeability Studies: Bridging Molecular Interactions and Macroscopic Observations. Journal of Membrane Biology, 255(4), 123-135.
+
 [8] Lee, C. Y., & Patel, R. S. (2022). Advancements in Drug Delivery: Utilizing Membrane Biophysics to Enhance Solubility and Targeting. Advanced Drug Delivery Reviews, 112, 45-59.
+
 
 How to run the project:
 
