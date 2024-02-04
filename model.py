@@ -8,15 +8,26 @@ import math
 
 class CA_grid:
 
-    def __init__(self, solute_amount=100, height=55, membrane_height=5, width=55) -> None:
+    def __init__(self, solute_amount=100, height=55, width=55) -> None:
+        """Initilizes the class CA_grid
+
+        input: self - the properties of the class CA_grid
+               solute amount - the amount of solute cells that need to be added instead of water cells. Integer value
+               height - the height of the grid that is made. Integer value
+               width - the width of the grid that is made. Integer value
+        """
         self.height = height
-        self.membrane_height = membrane_height
         self.width = width
 
         self.solute_amount = solute_amount
         self.grid = None
     
     def make_grid(self):
+        """Makes the grid based on the given properties to the class CA_grid
+
+        input: self - the properties of the class CA_grid
+        output: returns a grid of size L by L
+        """
         self.grid = np.zeros((self.height, self.width), dtype=np.int32)
 
         water_molecule = 0
@@ -39,14 +50,23 @@ class CA_grid:
                 self.grid[height, width] = 2
                 solute_molecule += 1
 
-        # plt.imshow(self.grid)
-        # plt.show()
-
         return self.grid
     
 class CA_rules:
 
     def __init__(self, ca_grid: CA_grid, pbw=0.25, pbwl= 0.45, pbl=0.1, pbw_parameter=True, pbl_parameter=True, pbwl_parameter=True, overlook_cell=0) -> None:
+        """Initilizes the class CA_rules
+
+        input: self - the properties of the class CA_rules
+               ca grid - a class the returns a grid. Class
+               pbw - the breaking probability between water cells. Integer value
+               pbl - the breaking probability between solute cells. Integer value
+               pbwl - the breaking probability betweeen solute and water cells. Integer value
+               pbw parameter - parameter that determines if the water breaking probability is used in the simulation. Boolean expression
+               pbl parameter - parameter that determines if the solute breaking probability is used in the simulation. Boolean expression
+               pbwl parameter - parameter that determines if the water/solute breaking probability is used in the simulation. Boolean expression
+               overlook cell - value of 0, 1 or 2 that tells the class to skip a cell type if necessary. Integer value 
+        """
         self.grid = ca_grid.make_grid()
 
         self.pbw = pbw
@@ -63,7 +83,11 @@ class CA_rules:
         self.width = ca_grid.width
 
     def step(self):
-        
+        """Iterates over the grid and determines if and how each cell will move.
+
+        input: self - the properties of the class CA_rules
+        output: returns a grid of size L by L
+        """
         for height in range(self.height):
             for width in range(self.width):
                 if self.grid[height, width] == 0 or self.grid[height, width] == self.overlook_cell:
@@ -100,8 +124,14 @@ class CA_rules:
 
 
     def get_neighbourings(self, height, width):
-        neighbours = [] # keeps track of neighbours of center cell, in order of center, above, under, left, right
-        # neighbours = [(h, w, v), (h, w, v), etc]
+        """Finds the neighbouring cells of a center cell and stores the coordinates and value of each neighbour.
+
+        input: self - the properties of the class CA_rules
+               height - y coordinate of the center cell
+               width - x coordinate of the center cell
+        output: returns a list of the center and its neighbours. With coordinates of its location and its value
+        """
+        neighbours = []
 
         neighbours.append((height, width, self.grid[height, width]))
         neighbours.append((((height - 1) % self.height), width, self.grid[((height - 1) % self.height), width]))
@@ -112,6 +142,12 @@ class CA_rules:
         return neighbours
         
     def move_probability(self, neighbours):
+        """Determines the moving probability of a cell based on its neighbours.
+
+        input: self - the properties of the class CA_rules
+               neighbours - list of the center cell and its neighbours
+        output: returns the moving probability of a cell. Integer value
+        """
         pbw_counter = 0
         pbwl_counter = 0
         pbl_counter = 0
@@ -132,6 +168,15 @@ class CA_rules:
         return move_probability
 
     def calculate_probability(self, pbl_counter, pbwl_counter, pbw_counter, open_cell_counter):
+        """Calculates the moving probability of a cell based on its neighbours.
+
+        input: self - the properties of the class CA_rules
+               pbw counter - the amount of water neighbouring cells of a water center cell. Integer value
+               pbl counter - the amount of solute neighbouring cells of a solute center cell. Integer value
+               pbwl counter -  the amount of solute neighbours of water center cell or water neighbours of solute center cell. Integer value
+               open cell counter - the amount of empty neighbours of the center cell. Integer value
+        output: returns the moving probability of a cell. Integer value
+        """
         pbw = 1
         pbwl = 1
         pbl = 1
@@ -156,6 +201,14 @@ class CA_rules:
 
     
     def generate_simulation(self, pbw=0, pbl=0, pbwl=0):
+        """Runs the simulation of the moving grid with 5000 iterations.
+
+        input: self - the properties of the class CA_rules
+               pbw - the breaking probability between water cells. Integer value
+               pbl - the breaking probability between solute cells. Integer value
+               pbwl - the breaking probability betweeen solute and water cells. Integer value
+        output: returns a grid of size L by L
+        """
         self.pbw = pbw
         self.pbl = pbl
         self.pbwl = pbwl
@@ -165,6 +218,7 @@ class CA_rules:
         
         return self.grid
     
+# In this main function the model can be checked visually with a animation of the moving grid
 if __name__ == '__main__':   
     # Define the CA_grid and CA_rules instances
     ca_grid = CA_grid()
