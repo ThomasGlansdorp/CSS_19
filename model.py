@@ -102,7 +102,7 @@ class CA_rules:
             for width in range(self.width):
                 if self.grid[height, width] == 0 or self.grid[height, width] == self.overlook_cell:
                     continue
-                
+
                 neighbours = self.get_neighbourings(height, width)
                 #print(neighbours)
 
@@ -235,7 +235,7 @@ class CA_rules:
         self.pbl = pbl
         self.pbwl = pbwl
 
-        for i in range(1, 5000):
+        for i in range(1, 10000):
             self.grid = self.step()
             # print(f'This is iteration {i} of the simulation')
         
