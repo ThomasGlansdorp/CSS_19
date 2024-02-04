@@ -15,41 +15,6 @@ class CA_grid:
 
         self.solute_amount = solute_amount
         self.grid = None
-
-    def make_grid_membrane(self):
-        self.grid = np.zeros((self.height, self.width), dtype=np.int32)
-
-        water_molecule_1 = 0
-        while(water_molecule_1 < round(self.width * 25 * 0.69)):
-            cell1_height = random.randint(0, 24)
-            width = random.randint(0, 54)
-            if self.grid[cell1_height, width] == 1:
-                continue
-            else:
-                self.grid[cell1_height, width] = 1
-                water_molecule_1 += 1
-
-        lipid_molecule = 0
-        while(lipid_molecule < round(self.width * 5 * 0.69)):
-            membrane_height = random.randint(25, 29)
-            width = random.randint(0, 54)
-            if self.grid[membrane_height, width] == 4:
-                continue
-            else:
-                self.grid[membrane_height, width] = 4   
-                lipid_molecule += 1
-
-        water_molecule_2 = 0
-        while(water_molecule_2 < round(self.width * 25 * 0.69)):
-            cell2_height = random.randint(30, 54)
-            width = random.randint(0, 54)
-            if self.grid[cell2_height, width] == 2:
-                continue
-            else:
-                self.grid[cell2_height, width] = 2  
-                water_molecule_2 += 1
-            
-        return self.grid
     
     def make_grid(self):
         self.grid = np.zeros((self.height, self.width), dtype=np.int32)
@@ -105,21 +70,18 @@ class CA_rules:
                     continue
 
                 neighbours = self.get_neighbourings(height, width)
-                #print(neighbours)
 
                 if not any([i[2] == 0 for i in neighbours]):  # makes new list of boolean expressions if non are true it continues to next step in for loop
                     continue
-                #print('hoi')
 
                 move_probability = self.move_probability(neighbours)
-                #print(move_probability)
 
                 rand = random.random() 
-                #print(rand)
+
                 if rand > move_probability: # if it does not break free of cluster continue to next step in for loop
                     continue
                 
-                #print('cell moves')
+
                 probabilities = [1 if v[2] == 0 else 0 for v in neighbours]
 
                 empty_cells = probabilities.count(1)
@@ -242,7 +204,6 @@ class CA_rules:
 
         for i in range(1, 5000):
             self.grid = self.step()
-            # print(f'This is iteration {i} of the simulation')
         
         return self.grid
     
@@ -269,6 +230,3 @@ if __name__ == '__main__':
     # Create the animation
     anim = animation.FuncAnimation(fig, update, frames=200, init_func=init, blit=True)
     plt.show()
-
-    # Save the animation as an mp4. Need ffmpeg, follow https://www.wikihow.com/Install-FFmpeg-on-Windows for Windows
-    #HTML(anim.to_html5_video())

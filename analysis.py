@@ -30,9 +30,6 @@ def calculate_attributes(grid=None, rules=None, cell_type=1):
 
     return f_o, f_1, f_2, f_3, f_4
 
-if __name__ == '__main__':
-     print('test')
-
 def count_neighbours(grid, total_height, total_width, cell_type=0):
     count = 0
 
